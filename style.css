@@ -16,13 +16,12 @@ html {
 }
 
 .page {
-    max-width: 60%;
-    width: 100%;
+    width: 42%;
     padding: 2rem;
     margin: 0 auto;
     text-align: center;
     user-select: none;
-    border: 2px solid black;
+    /* border: 2px solid black; */
 }
 
 h1 {
@@ -38,7 +37,7 @@ h1 {
     position: relative
 }
 
-.fifteen .item {
+.item {
     position: absolute;
     left: 0;
     top: 0;
@@ -49,13 +48,13 @@ h1 {
     border: none;
     background: #000;
     color: #fff;
-    font-size: 4rem;
+    font-size: 5rem;
     cursor: pointer;
     box-shadow: inset 1px 1px #e5d6f6;
     transition: transform ease .5s
 }
 
-.fifteen .itemVal {
+.itemVal {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -65,12 +64,12 @@ h1 {
     box-shadow: inset 0 0 0 2px #922ec5
 }
 
-.fifteen .item:hover {
+.item:hover {
     background: #fff;
     transition: all ease .3s
 }
 
-.fifteen .item:hover>span {
+.item:hover>span {
     color: #000;
     transition: all ease .3s
 }
@@ -81,7 +80,8 @@ h1 {
     font: 2rem/1.2 Georgia, serif;
     border: none;
     cursor: pointer;
-    padding: .5em 1.5em
+    padding: .5em;
+    text-align: center;
 }
 
 .button:hover {
@@ -115,7 +115,7 @@ h1 {
         width: 90%;
     }
     .item{
-        font-size: 0.4rem;
+        font-size: 0.8rem;
    }
    .button{
     /* width: 40%; */
