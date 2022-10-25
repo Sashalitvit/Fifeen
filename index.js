@@ -1,5 +1,6 @@
 const body = document.querySelector('body')
 const page = document.createElement('div')
+const audio = new Audio()
 
 page.classList.add('page')
 body.prepend(page)
@@ -43,13 +44,18 @@ shuffle.setAttribute('id', 'shuflle')
 shuffle.textContent = 'Shuffle'
 page.append(shuffle)
 
-shuffle.addEventListener('click', ()=>{
+let flatMatrix = matrix.flat()
+let shuffleArr = shuffleArray(flatMatrix)
+matrix = getMatrix(shuffleArr)
+setPositionItems(matrix)
 
-    const flatMatrix = matrix.flat()
-    const shuffleArr = shuffleArray(flatMatrix)
+shuffle.addEventListener('click', ()=>{
+    
+    flatMatrix = matrix.flat()
+    shuffleArr = shuffleArray(flatMatrix)
     matrix = getMatrix(shuffleArr)
     setPositionItems(matrix)
-
+    
 })
 // // Change position by click
 const blankNumber = 16
@@ -66,6 +72,7 @@ containerNode.addEventListener('click', (event)=>{
     console.log(isValid)
     if(isValid){
         swap(blankCoords, buttonCoords, matrix)
+        playAudio()
         setPositionItems(matrix)
     }
 })
@@ -82,7 +89,7 @@ function getMatrix(arr){
         }
         matrix[y][x] = arr[i]
         x++
-    }
+    }    
     return matrix
 }
 
@@ -104,7 +111,7 @@ function setNodeStyles(node, x, y){
 }
 
 function shuffleArray(arr){
-
+    
     return arr.sort(() => Math.random() - 0.5);
 }
 
@@ -126,8 +133,17 @@ function isValidForSwape(coords1, coords2){
     return (diffX == 1 || diffY == 1) && (coords1.x === coords2.x || coords1.y === coords2.y)
 }
 
-function swap(coords1, coords2, matrix){
+function swap(coords1, coords2, matrix){    
     const coords1Number = matrix[coords1.y][coords1.x]
     matrix[coords1.y][coords1.x] = matrix[coords2.y][coords2.x]
     matrix[coords2.y][coords2.x] = coords1Number
 }
+
+function playAudio() {   
+    audio.src = './assets/sound.mp3'
+    audio.currentTime = 0;
+    audio.play();
+  }
+function pauseAudio() {
+    audio.pause();
+  }

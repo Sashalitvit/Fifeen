@@ -15,8 +15,8 @@ html {
     font: 16px/1.4 Georgia, serif
 }
 
-.page {
-    width: 42%;
+.page {   
+    width: 42%;    
     padding: 2rem;
     margin: 0 auto;
     text-align: center;
@@ -86,12 +86,12 @@ h1 {
 
 .button:hover {
     background: #922ec5;
-    color: #ffffff;
+    color: #ffffff;    
     transition: ease 0.3s;
 }
 @media (min-width: 769px) and (max-width:1280px){
     .page{
-        width: 40%;
+        width: 40%; 
         padding: 1rem;
     }
     .item{
@@ -100,7 +100,7 @@ h1 {
 }
 @media (min-width: 321px) and (max-width:768px){
     .page{
-        width: 50%;
+        width: 50%; 
     }
     .item{
         font-size: 1.3rem;
@@ -112,7 +112,7 @@ h1 {
 }
 @media (max-width: 320px){
     .page{
-        width: 90%;
+        width: 90%;         
     }
     .item{
         font-size: 0.8rem;
@@ -121,7 +121,7 @@ h1 {
     /* width: 40%; */
     font-size: 0.5rem;
    }
-   .itemVal {
+   .itemVal {    
     width: 90%;
     height: 90%;
     margin: 4%;
