@@ -2,6 +2,7 @@ const body = document.querySelector('body')
 const page = document.createElement('div')
 const audio = new Audio()
 
+
 page.classList.add('page')
 body.prepend(page)
 
@@ -24,9 +25,6 @@ for(let i = 0; i < countItems; i++){
 }
 
 const itemNodes = Array.from(containerNode.querySelectorAll('.item'))
-
-console.log(itemNodes, itemNodes.length)
-
 
 
 if (itemNodes.length !== 16){
@@ -54,6 +52,7 @@ shuffle.addEventListener('click', ()=>{
     flatMatrix = matrix.flat()
     shuffleArr = shuffleArray(flatMatrix)
     matrix = getMatrix(shuffleArr)
+    playAudio()
     setPositionItems(matrix)
     
 })
@@ -97,9 +96,9 @@ function setPositionItems(matrix){
     for(let y = 0; y < matrix.length; y++){
         for(let x = 0; x < matrix[y].length; x++){
             const value = matrix[y][x]
-            console.log(value)
+            
             const node = itemNodes[value - 1]
-            console.log(node)
+            
             setNodeStyles(node, x, y)
         }
     }
@@ -136,14 +135,87 @@ function isValidForSwape(coords1, coords2){
 function swap(coords1, coords2, matrix){    
     const coords1Number = matrix[coords1.y][coords1.x]
     matrix[coords1.y][coords1.x] = matrix[coords2.y][coords2.x]
-    matrix[coords2.y][coords2.x] = coords1Number
+    matrix[coords2.y][coords2.x] = coords1Number    
 }
 
 function playAudio() {   
-    audio.src = './assets/sound.mp3'
+    audio.src = './assets/Sound_click.mp3'
     audio.currentTime = 0;
     audio.play();
   }
 function pauseAudio() {
     audio.pause();
   }
+
+//   Drag&Drop
+//start  for drag&drop
+const btn = document.querySelectorAll('.item')
+btn.forEach(el => {
+    el.addEventListener('mouseenter', ()=>{
+        el.setAttribute('draggable', 'true')
+        el.addEventListener('dragstart', dragstart)
+        el.addEventListener('dragend', dragend)
+    })
+      
+})
+btn.forEach(el =>{
+    el.addEventListener('mouseleave', ()=>{        
+        el.removeAttribute('draggable')
+        el.removeEventListener('dragstart', dragstart)
+        el.removeEventListener('dragend', dragend)
+    })
+    
+})
+containerNode.addEventListener('dragover', dragover)
+containerNode.addEventListener('dragenter', dragenter)
+containerNode.addEventListener('dragleave', dragleave)
+containerNode.addEventListener('drop', dragdrop)
+
+// end
+let dragBtnNumber, dragBtn, transformValue
+
+function dragstart(event){
+    event.target.classList.add('selected')
+    dragBtnNumber = Number(event.target.dataset.matrixId)
+    dragBtn = event.target
+    console.log(dragBtnNumber)
+    console.log(matrix)
+}
+
+function dragend(event){
+    event.target.classList.remove('selected') 
+    
+}
+function dragover(event){
+    
+    event.preventDefault()
+    }
+    function dragenter(event) {
+       
+    }
+    function dragleave(event) {
+      
+    }
+    function dragdrop(event){
+   
+    let emptyBtn = document.querySelector("[data-matrix-id = '16']")
+    transformValue = emptyBtn.style.transform    
+     
+    let buttonCoords = findCoordinatesByNumber(dragBtnNumber, matrix)
+    
+    let blankCoords = findCoordinatesByNumber(blankNumber, matrix)
+    
+    let isValid = isValidForSwape(buttonCoords, blankCoords)
+    console.log(isValid)
+    if(isValid){
+        swap(blankCoords, buttonCoords, matrix)
+        playAudio() 
+        setPositionItems(matrix)       
+    }       
+       
+    }
+   
+
+   
+    
+ 
