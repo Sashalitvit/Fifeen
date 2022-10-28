@@ -1,0 +1,221 @@
+const body = document.querySelector('body')
+const page = document.createElement('div')
+const audio = new Audio()
+
+
+page.classList.add('page')
+body.prepend(page)
+
+
+const containerNode = document.createElement('div')
+containerNode.classList.add('fifteen')
+page.append(containerNode)
+
+let countItems = 16
+// create buttons
+for(let i = 0; i < countItems; i++){
+    let btn = document.createElement('button')
+    btn.classList.add('item')
+    btn.dataset.matrixId = `${i+1}`
+    let spn = document.createElement('span')
+    spn.classList.add('itemVal')
+    spn.textContent = `${i+1}`
+    btn.append(spn)
+    containerNode.append(btn)
+}
+
+const itemNodes = Array.from(containerNode.querySelectorAll('.item'))
+
+
+if (itemNodes.length !== 16){
+    throw new Error(`Должно быть ${countItems} items in HTML`)
+}
+// Position of elements
+itemNodes[countItems - 1].style.display = 'none'
+let matrix = getMatrix(itemNodes.map(item => Number(item.dataset.matrixId)))
+
+setPositionItems(matrix)
+// Shafle of elements
+const shuffle = document.createElement('button')
+shuffle.classList.add('button')
+shuffle.setAttribute('id', 'shuflle')
+shuffle.textContent = 'Shuffle'
+page.append(shuffle)
+
+let flatMatrix = matrix.flat()
+let shuffleArr = shuffleArray(flatMatrix)
+matrix = getMatrix(shuffleArr)
+setPositionItems(matrix)
+
+shuffle.addEventListener('click', ()=>{
+    
+    flatMatrix = matrix.flat()
+    shuffleArr = shuffleArray(flatMatrix)
+    matrix = getMatrix(shuffleArr)
+    playAudio()
+    setPositionItems(matrix)
+    
+})
+// // Change position by click
+const blankNumber = 16
+containerNode.addEventListener('click', (event)=>{
+    const buttonNode = event.target.closest('button')
+    if(!buttonNode){
+        return
+    }
+
+    const buttonNumber = Number(buttonNode.dataset.matrixId)
+    const buttonCoords = findCoordinatesByNumber(buttonNumber, matrix)
+    const blankCoords = findCoordinatesByNumber(blankNumber, matrix)
+    const isValid = isValidForSwape(buttonCoords, blankCoords)
+    console.log(isValid)
+    if(isValid){
+        swap(blankCoords, buttonCoords, matrix)
+        playAudio()
+        setPositionItems(matrix)
+    }
+})
+
+// Our help-function
+function getMatrix(arr){
+    const matrix =[[],[],[],[]]
+    let x = 0;
+    let y = 0;
+    for(let i = 0; i < arr.length; i++){
+        if( x >= 4){
+            y++
+            x = 0
+        }
+        matrix[y][x] = arr[i]
+        x++
+    }    
+    return matrix
+}
+
+function setPositionItems(matrix){
+    for(let y = 0; y < matrix.length; y++){
+        for(let x = 0; x < matrix[y].length; x++){
+            const value = matrix[y][x]
+            
+            const node = itemNodes[value - 1]
+            
+            setNodeStyles(node, x, y)
+        }
+    }
+}
+
+function setNodeStyles(node, x, y){
+     const shiftPs = 100;
+     node.style.transform = `translate3D(${x*shiftPs}%, ${y*shiftPs}%, 0)`
+}
+
+function shuffleArray(arr){
+    
+    return arr.sort(() => Math.random() - 0.5);
+}
+
+function findCoordinatesByNumber(number, matrix){
+    for(let y = 0; y < matrix.length; y++){
+        for(let x = 0; x < matrix[y].length; x++){
+            if(matrix[y][x] === number){
+                return {x, y}
+            }
+        }
+    }
+    return null
+}
+
+function isValidForSwape(coords1, coords2){
+    console.log(coords1, coords2)
+    const diffX = Math.abs(coords1.x - coords2.x)
+    const diffY = Math.abs(coords1.y - coords2.y)
+    return (diffX == 1 || diffY == 1) && (coords1.x === coords2.x || coords1.y === coords2.y)
+}
+
+function swap(coords1, coords2, matrix){    
+    const coords1Number = matrix[coords1.y][coords1.x]
+    matrix[coords1.y][coords1.x] = matrix[coords2.y][coords2.x]
+    matrix[coords2.y][coords2.x] = coords1Number    
+}
+
+function playAudio() {   
+    audio.src = './assets/Sound_click.mp3'
+    audio.currentTime = 0;
+    audio.play();
+  }
+function pauseAudio() {
+    audio.pause();
+  }
+
+//   Drag&Drop
+//start  for drag&drop
+const btn = document.querySelectorAll('.item')
+btn.forEach(el => {
+    el.addEventListener('mouseenter', ()=>{
+        el.setAttribute('draggable', 'true')
+        el.addEventListener('dragstart', dragstart)
+        el.addEventListener('dragend', dragend)
+    })
+      
+})
+btn.forEach(el =>{
+    el.addEventListener('mouseleave', ()=>{        
+        el.removeAttribute('draggable')
+        el.removeEventListener('dragstart', dragstart)
+        el.removeEventListener('dragend', dragend)
+    })
+    
+})
+containerNode.addEventListener('dragover', dragover)
+containerNode.addEventListener('dragenter', dragenter)
+containerNode.addEventListener('dragleave', dragleave)
+containerNode.addEventListener('drop', dragdrop)
+
+// end
+let dragBtnNumber, dragBtn, transformValue
+
+function dragstart(event){
+    event.target.classList.add('selected')
+    dragBtnNumber = Number(event.target.dataset.matrixId)
+    dragBtn = event.target
+    console.log(dragBtnNumber)
+    console.log(matrix)
+}
+
+function dragend(event){
+    event.target.classList.remove('selected') 
+    
+}
+function dragover(event){
+    
+    event.preventDefault()
+    }
+    function dragenter(event) {
+       
+    }
+    function dragleave(event) {
+      
+    }
+    function dragdrop(event){
+   
+    let emptyBtn = document.querySelector("[data-matrix-id = '16']")
+    transformValue = emptyBtn.style.transform    
+     
+    let buttonCoords = findCoordinatesByNumber(dragBtnNumber, matrix)
+    
+    let blankCoords = findCoordinatesByNumber(blankNumber, matrix)
+    
+    let isValid = isValidForSwape(buttonCoords, blankCoords)
+    console.log(isValid)
+    if(isValid){
+        swap(blankCoords, buttonCoords, matrix)
+        playAudio() 
+        setPositionItems(matrix)       
+    }       
+       
+    }
+   
+
+   
+    
+ 
